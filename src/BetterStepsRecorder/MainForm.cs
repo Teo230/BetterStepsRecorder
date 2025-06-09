@@ -47,7 +47,6 @@ namespace BetterStepsRecorder
             DisableRecording();
         }
 
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Program.SaveRecordEvents();
