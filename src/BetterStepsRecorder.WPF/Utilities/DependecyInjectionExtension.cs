@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace BetterStepsRecorder.WPF
+namespace BetterStepsRecorder.WPF.Utilities
 {
     internal class DependecyInjectionExtension : MarkupExtension
     {

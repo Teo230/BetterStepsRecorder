@@ -3,10 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:utilities="clr-namespace:BetterStepsRecorder.WPF.Utilities"
         xmlns:local="clr-namespace:BetterStepsRecorder.WPF"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
         mc:Ignorable="d"
-        DataContext="{local:DependecyInjection Type=local:MainWindowViewModel}"
+        DataContext="{utilities:DependecyInjection Type=local:MainWindowViewModel}"
         Title="Better Steps Recorder"
         ShowIconOnTitleBar="True"
         Height="650"
@@ -41,7 +44,7 @@
                         <MenuItem Header="_To Obsidian Vault"/>
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="_Help"/>
+                <MenuItem Header="_Help" Command="{Binding OpenHelpDialog}"/>
             </Menu>
         </DockPanel>
 

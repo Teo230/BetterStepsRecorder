@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Features.ResolveAnything;
-using BetterStepsRecorder.WPF.Services;
+using BetterStepsRecorder.WPF.Utilities;
+using MahApps.Metro.Controls.Dialogs;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
@@ -20,7 +21,7 @@ namespace BetterStepsRecorder.WPF
 
             var builder = new ContainerBuilder();
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            builder.RegisterType<ExportService>().As<IExportService>().SingleInstance();
+            builder.RegisterType<DialogCoordinator>().As<IDialogCoordinator>().SingleInstance();
             IContainer container = builder.Build();
             DependecyInjectionExtension.Resolver = container.Resolve;
         }   
