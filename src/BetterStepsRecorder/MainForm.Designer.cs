@@ -223,6 +223,7 @@
             menuStrip1.Size = new Size(938, 24);
             menuStrip1.TabIndex = 8;
             menuStrip1.Text = "menuStrip1";
+            menuStrip1.ItemClicked += menuStrip1_ItemClicked;
             // 
             // fileToolStripMenuItem
             // 
@@ -270,34 +271,34 @@
             // 
             exportToFileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { exportToRtfToolStripMenuItem, exportToHtmlToolStripMenuItem, exportToOdtToolStripMenuItem });
             exportToFileToolStripMenuItem.Name = "exportToFileToolStripMenuItem";
-            exportToFileToolStripMenuItem.Size = new Size(165, 22);
+            exportToFileToolStripMenuItem.Size = new Size(166, 22);
             exportToFileToolStripMenuItem.Text = "To File";
             // 
             // exportToRtfToolStripMenuItem
             // 
             exportToRtfToolStripMenuItem.Name = "exportToRtfToolStripMenuItem";
-            exportToRtfToolStripMenuItem.Size = new Size(106, 22);
+            exportToRtfToolStripMenuItem.Size = new Size(107, 22);
             exportToRtfToolStripMenuItem.Text = "RTF";
             exportToRtfToolStripMenuItem.Click += exportToRtfToolStripMenuItem_Click;
             // 
             // exportToHtmlToolStripMenuItem
             // 
             exportToHtmlToolStripMenuItem.Name = "exportToHtmlToolStripMenuItem";
-            exportToHtmlToolStripMenuItem.Size = new Size(106, 22);
+            exportToHtmlToolStripMenuItem.Size = new Size(107, 22);
             exportToHtmlToolStripMenuItem.Text = "HTML";
             exportToHtmlToolStripMenuItem.Click += exportToHtmlToolStripMenuItem_Click;
             // 
             // exportToOdtToolStripMenuItem
             // 
             exportToOdtToolStripMenuItem.Name = "exportToOdtToolStripMenuItem";
-            exportToOdtToolStripMenuItem.Size = new Size(106, 22);
+            exportToOdtToolStripMenuItem.Size = new Size(107, 22);
             exportToOdtToolStripMenuItem.Text = "ODT";
             exportToOdtToolStripMenuItem.Click += exportToOdtToolStripMenuItem_Click;
             // 
             // exportToObsidianVaultToolStripMenuItem
             // 
             exportToObsidianVaultToolStripMenuItem.Name = "exportToObsidianVaultToolStripMenuItem";
-            exportToObsidianVaultToolStripMenuItem.Size = new Size(165, 22);
+            exportToObsidianVaultToolStripMenuItem.Size = new Size(166, 22);
             exportToObsidianVaultToolStripMenuItem.Text = "To Obsidian Vault";
             exportToObsidianVaultToolStripMenuItem.Click += exportToObsidianVaultToolStripMenuItem_Click;
             // 

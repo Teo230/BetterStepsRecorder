@@ -1,8 +1,8 @@
-﻿using BetterStepsRecorder.WPF.Components;
-using BetterStepsRecorder.WPF.Utilities;
+﻿using BetterStepsRecorder.WPF.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +10,26 @@ using System.Windows.Input;
 
 namespace BetterStepsRecorder.WPF
 {
-    internal class MainWindowViewModel
+    internal class MainWindowViewModel : INotifyPropertyChanged
     {
+        #region Props
+
+        private bool _recording = false;
+        public bool Recording
+        {
+            get => _recording;
+            set
+            {
+                if (_recording != value)
+                {
+                    _recording = value;
+                    NotifPropertyChanged(nameof(Recording));
+                }
+            }
+        }
+
+        #endregion
+
         IDialogCoordinator _dialogCoordinator { get; }
 
         public MainWindowViewModel(IDialogCoordinator dialogCoordinator) 
@@ -56,7 +74,22 @@ namespace BetterStepsRecorder.WPF
             }
         }
 
+        private ICommand _startRecording;
+        public ICommand StartRecording
+        {
+            get
+            {
+                _startRecording ??= new RelayCommands(async obj =>
+                {
+                    Recording = !Recording;
+                }, obj => true);
+                return _startRecording;
+            }
+        }
 
         #endregion
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void NotifPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

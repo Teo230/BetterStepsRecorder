@@ -58,16 +58,33 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
-            <Label Content="Steps"/>
-        </Grid>
-        <GridSplitter Grid.Column="1" Width="3"></GridSplitter>
-        <Grid Grid.Column="2">
-            <Label Content="Screenshot preview"/>
-        </Grid>
-        <GridSplitter Grid.Column="3" Width="3"></GridSplitter>
-        <Grid Grid.Column="4">
-            <Label Content="Properties"/>
-        </Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                
+                <ListBox Grid.Row="0" BorderBrush="{StaticResource MahApps.Brushes.Accent3}" BorderThickness="1" Margin="5,0">
+                    <ListBoxItem Content="Test1"></ListBoxItem>
+                    <ListBoxItem Content="Test2"></ListBoxItem>
+                    <ListBoxItem Content="Test3"></ListBoxItem>
+                </ListBox>
+                <Button Margin="5" Grid.Row="1" Command="{Binding StartRecording}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="16" Height="16" Fill="Red"/>
+                            <Label Content="Start Recording" FontSize="12"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="3"></GridSplitter>
+            <Grid Grid.Column="2">
+                <Image Source="/Resources/logo.ico" />
+            </Grid>
+            <GridSplitter Grid.Column="3" Width="3"></GridSplitter>
+            <Grid Grid.Column="4">
+                
+            </Grid>
         </Grid>
     </Grid>
 </mah:MetroWindow>
