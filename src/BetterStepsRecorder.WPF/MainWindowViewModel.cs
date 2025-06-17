@@ -23,7 +23,7 @@ namespace BetterStepsRecorder.WPF
                 if (_recording != value)
                 {
                     _recording = value;
-                    NotifPropertyChanged(nameof(Recording));
+                    NotifyPropertyChanged(nameof(Recording));
                 }
             }
         }
@@ -81,15 +81,28 @@ namespace BetterStepsRecorder.WPF
             {
                 _startRecording ??= new RelayCommands(async obj =>
                 {
-                    Recording = !Recording;
+                    Recording = true;
                 }, obj => true);
                 return _startRecording;
+            }
+        }
+
+        private ICommand _stopRecording;
+        public ICommand StopRecording
+        {
+            get
+            {
+                _stopRecording ??= new RelayCommands(async obj =>
+                {
+                    Recording = false;
+                }, obj => true);
+                return _stopRecording;
             }
         }
 
         #endregion
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public void NotifPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
