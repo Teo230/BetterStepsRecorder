@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BetterStepsRecorder.WPF.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -87,7 +88,7 @@ namespace BetterStepsRecorder.WPF.Services
             if (!_isCapturing)
                 return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
-            if (nCode < 0 || MouseMessages.WM_LBUTTONDOWN != (MouseMessages)wParam && MouseMessages.WM_RBUTTONDOWN != (MouseMessages)wParam)
+            if (nCode < 0 || MouseMessages.WM_LBUTTONDOWN != (MouseMessages)wParam)
                 return CallNextHookEx(_hookID, nCode, wParam, lParam);
 
             if (!GetCursorPos(out POINT cursorPos))
@@ -120,41 +121,12 @@ namespace BetterStepsRecorder.WPF.Services
                     elementType = element.Current.ControlType.ToString();
                 }
 
-                // Determine click type
-                string clickType = MouseMessages.WM_LBUTTONDOWN == (MouseMessages)wParam ? "Left Click" : "Right Click";
-
-                //Skip record if its to pause recording
-                //if (elementName != "Pause Recording" && applicationName != "Better Steps Recorder")
-                //{
-                // Create a record event object and add it to the list
-                //RecordEvent recordEvent = new RecordEvent
-                //{
-                //    WindowTitle = windowTitle,
-                //    ApplicationName = applicationName,
-                //    WindowCoordinates = new RECT { Left = rect.Left, Top = rect.Top, Bottom = rect.Bottom, Right = rect.Right },
-                //    WindowSize = new Size { Width = windowWidth, Height = windowHeight },
-                //    UICoordinates = new RECT { Left = UIrect.Left, Top = UIrect.Top, Bottom = UIrect.Bottom, Right = UIrect.Right },
-                //    UISize = new Size { Width = UIWidth, Height = UIHeight },
-                //    UIElement = element,
-                //    ElementName = elementName,
-                //    ElementType = elementType,
-                //    MouseCoordinates = new POINT { X = cursorPos.X, Y = cursorPos.Y },
-                //    EventType = clickType,
-                //    _StepText = $"In {applicationName}, {clickType} on {elementType} {elementName}",
-                //    Step = _recordEvents.Count + 1
-                //};
-                //_recordEvents.Add(recordEvent);
-
                 // Take screenshot of the window
                 string? screenshotb64 = SaveScreenRegionScreenshot(rect.Left, rect.Top, windowWidth, windowHeight);
-                //if (screenshotb64 != null)
-                //{
-                //    recordEvent.Screenshotb64 = screenshotb64;
-                //}
 
                 // Send screenshot event
-                OnScreenshotCaptured?.Invoke(this, screenshotb64);
-                //}
+                if(!string.IsNullOrEmpty(screenshotb64))
+                    OnScreenshotCaptured?.Invoke(this, screenshotb64);
             }
 
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -182,7 +154,9 @@ namespace BetterStepsRecorder.WPF.Services
                     gfx.CopyFromScreen(x, y, 0, 0, new System.Drawing.Size(width, height), CopyPixelOperation.SourceCopy);
 
                     // Draw an arrow pointing at the cursor
-                    DrawArrowAtCursor(gfx, width, height, x, y);
+                    //DrawArrowAtCursor(gfx, width, height, x, y);
+                    DrawRedDot(gfx, width, height, x, y);
+                    DrawCursor(gfx, width, height, x, y);
                 }
 
                 // Convert the bitmap to a memory stream
@@ -251,6 +225,57 @@ namespace BetterStepsRecorder.WPF.Services
 
             // Draw the arrow
             gfx.DrawLine(arrowPen, endX, endY, cursorX, cursorY);
+        }
+
+        private void DrawRedDot(Graphics gfx, int width, int height, int offsetX, int offsetY)
+        {
+            // Get the current cursor position in screen coordinates
+            if (!GetCursorPos(out POINT cursorPos))
+                return;
+
+            // Convert screen coordinates to bitmap coordinates
+            int cursorX = cursorPos.X - offsetX;
+            int cursorY = cursorPos.Y - offsetY;
+
+            // Define the size of the red dot
+            int dotDiameter = 12;
+            int dotRadius = dotDiameter / 2;
+
+            // Optionally, draw a black border around the dot for visibility
+            using (Pen borderPen = new Pen(Color.Red, 2))
+            {
+                gfx.DrawEllipse(borderPen, cursorX - dotRadius, cursorY - dotRadius, dotDiameter, dotDiameter);
+            }
+
+            gfx.FillEllipse(Brushes.Red, cursorX - dotRadius, cursorY - dotRadius, dotDiameter, dotDiameter);
+        }
+
+        private void DrawCursor(Graphics gfx, int width, int height, int offsetX, int offsetY)
+        {
+            // Get the current cursor position in screen coordinates
+            if (!GetCursorPos(out POINT cursorPos))
+                return;
+
+            // Convert screen coordinates to bitmap coordinates
+            int cursorX = cursorPos.X - offsetX;
+            int cursorY = cursorPos.Y - offsetY;
+
+            // Capture the cursor
+            CURSORINFO cursorInfo = new CURSORINFO();
+            cursorInfo.cbSize = Marshal.SizeOf(typeof(CURSORINFO));
+            if (GetCursorInfo(out cursorInfo) && cursorInfo.flags == 1) // 1 means cursor is visible
+            {
+                IntPtr hdc = gfx.GetHdc();
+                try
+                {
+                    // Draw the cursor at the correct position relative to the bitmap
+                    DrawIcon(hdc, cursorX, cursorY, cursorInfo.hCursor);
+                }
+                finally
+                {
+                    gfx.ReleaseHdc(hdc);
+                }
+            }
         }
 
         /// <summary>

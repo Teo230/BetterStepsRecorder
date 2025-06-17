@@ -53,6 +53,15 @@ namespace BetterStepsRecorder.WPF.Utilities
             }
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CURSORINFO
+        {
+            public Int32 cbSize;
+            public Int32 flags;
+            public IntPtr hCursor;
+            public POINT ptScreenPos;
+        }
+
         public const int WH_MOUSE_LL = 14;
         public enum MouseMessages
         {
@@ -62,6 +71,16 @@ namespace BetterStepsRecorder.WPF.Utilities
             WM_MOUSEWHEEL = 0x020A,
             WM_RBUTTONDOWN = 0x0204,
             WM_RBUTTONUP = 0x0205
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct ICONINFO
+        {
+            public bool fIcon;
+            public Int32 xHotspot;
+            public Int32 yHotspot;
+            public IntPtr hbmMask;
+            public IntPtr hbmColor;
         }
 
         public static IntPtr GetWindowUnderCursor()
@@ -161,6 +180,18 @@ namespace BetterStepsRecorder.WPF.Utilities
 
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorInfo(out CURSORINFO pci);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CopyIcon(IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        public static extern bool DrawIcon(IntPtr hdc, int x, int y, IntPtr hIcon);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetIconInfo(IntPtr hIcon, out ICONINFO piconinfo);
 
         [DllImport("user32.dll")]
         public static extern IntPtr WindowFromPoint(POINT Point);
