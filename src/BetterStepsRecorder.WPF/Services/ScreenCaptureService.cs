@@ -20,7 +20,7 @@ namespace BetterStepsRecorder.WPF.Services
         private bool _isCapturing = false;
         private LowLevelMouseProc _proc;
 
-        public event EventHandler<string> OnScreenshotCaptured;
+        public event EventHandler<ScreenshotInfo> OnScreenshotCaptured;
 
         /// <summary>
         /// Delegate for the low-level mouse hook callback
@@ -125,8 +125,23 @@ namespace BetterStepsRecorder.WPF.Services
                 string? screenshotb64 = SaveScreenRegionScreenshot(rect.Left, rect.Top, windowWidth, windowHeight);
 
                 // Send screenshot event
-                if(!string.IsNullOrEmpty(screenshotb64))
-                    OnScreenshotCaptured?.Invoke(this, screenshotb64);
+                if (!string.IsNullOrEmpty(screenshotb64))
+                {
+                    var screenshotInfo = new ScreenshotInfo
+                    {
+                        WindowTitle = windowTitle,
+                        ApplicationName = applicationName,
+                        ElementName = elementName,
+                        ElementType = elementType,
+                        UIWidth = UIWidth,
+                        UIHeight = UIHeight,
+                        WindowWidth = windowWidth,
+                        WindowHeight = windowHeight,
+                        MousePosition = new POINT { X = cursorPos.X, Y = cursorPos.Y },
+                        ScreenshotBase64 = screenshotb64
+                    };
+                    OnScreenshotCaptured?.Invoke(this, screenshotInfo);
+                }
             }
 
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -140,7 +155,7 @@ namespace BetterStepsRecorder.WPF.Services
         /// <param name="width">Width of the region to capture</param>
         /// <param name="height">Height of the region to capture</param>
         /// <returns>Base64 string representation of the screenshot, or null if capture failed</returns>
-        public string? SaveScreenRegionScreenshot(int x, int y, int width, int height)
+        private string? SaveScreenRegionScreenshot(int x, int y, int width, int height)
         {
             try
             {
@@ -277,46 +292,26 @@ namespace BetterStepsRecorder.WPF.Services
                 }
             }
         }
-
-        /// <summary>
-        /// Converts a Base64 string to an Image
-        /// </summary>
-        /// <param name="base64String">Base64 string representation of the image</param>
-        /// <returns>Image object</returns>
-        public Image Base64ToImage(string base64String)
-        {
-            byte[] imageBytes = Convert.FromBase64String(base64String);
-            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-            {
-                ms.Write(imageBytes, 0, imageBytes.Length);
-                return Image.FromStream(ms, true);
-            }
-        }
-
-        /// <summary>
-        /// Converts an Image to a Base64 string
-        /// </summary>
-        /// <param name="image">Image to convert</param>
-        /// <param name="format">Image format to use</param>
-        /// <returns>Base64 string representation of the image</returns>
-        public static string ImageToBase64(Image image, ImageFormat format)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                // Convert Image to byte[]
-                image.Save(ms, format);
-                byte[] imageBytes = ms.ToArray();
-
-                // Convert byte[] to Base64 String
-                return Convert.ToBase64String(imageBytes);
-            }
-        }
     }
 
     internal interface IScreenCaptureService
     {
         void StartCapturing();
         void StopCapturing();
-        event EventHandler<string> OnScreenshotCaptured;
+        event EventHandler<ScreenshotInfo> OnScreenshotCaptured;
+    }
+
+    internal class ScreenshotInfo()
+    {
+        public string? WindowTitle { get; set; }
+        public string? ApplicationName { get; set; }
+        public string? ElementName { get; set; }
+        public string? ElementType { get; set; }
+        public int UIWidth { get; set; }
+        public int UIHeight { get; set; }
+        public int WindowWidth { get; set; }
+        public int WindowHeight { get; set; }
+        public POINT MousePosition { get; set; }
+        public string? ScreenshotBase64 { get; set; }
     }
 }

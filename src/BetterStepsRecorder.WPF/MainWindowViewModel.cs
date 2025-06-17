@@ -133,9 +133,9 @@ namespace BetterStepsRecorder.WPF
             _screenCaptureService.StopCapturing();
         }
 
-        private void _screenCaptureService_OnScreenshotCaptured(object? sender, string base64Screenshot)
+        private void _screenCaptureService_OnScreenshotCaptured(object? sender, ScreenshotInfo screenshotInfo)
         {
-            SelectedScreenshot = base64Screenshot;
+            SelectedScreenshot = screenshotInfo.ScreenshotBase64;
         }
 
         #endregion
