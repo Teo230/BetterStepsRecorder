@@ -1,47 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
-using FlaUI.Core;
-using FlaUI.Core.AutomationElements;
-using FlaUI.Core.Conditions;
-using FlaUI.Core.Definitions;
-using FlaUI.UIA3;
-using System.Drawing;
+using System.Windows.Automation;
 using Debug = System.Diagnostics.Debug;
 
-namespace BetterStepsRecorder
+namespace BetterStepsRecorder.WPF.Utilities
 {
     public class WindowHelper
     {
         public const int SRCCOPY = 0x00CC0020;
         private const uint GA_ROOT = 2;
-        private static UIA3Automation? _automation;
-
-        // Get or initialize the automation instance
-        public static UIA3Automation Automation
-        {
-            get
-            {
-                if (_automation == null)
-                {
-                    _automation = new UIA3Automation();
-                }
-                return _automation;
-            }
-        }
-
-        // Cleanup method to properly dispose of automation resources
-        public static void Cleanup()
-        {
-            if (_automation != null)
-            {
-                _automation.Dispose();
-                _automation = null;
-            }
-        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -91,115 +62,6 @@ namespace BetterStepsRecorder
             WM_MOUSEWHEEL = 0x020A,
             WM_RBUTTONDOWN = 0x0204,
             WM_RBUTTONUP = 0x0205
-        }
-
-        // FlaUI methods for finding elements
-        public static AutomationElement? GetElementFromPoint(System.Drawing.Point point)
-        {
-            try
-            {
-                // In FlaUI 5.0.0, we use System.Drawing.Point directly
-                return Automation.FromPoint(point);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error getting element from point: {ex.Message}");
-                return null;
-            }
-        }
-
-        public static AutomationElement? GetElementFromCursor()
-        {
-            POINT cursorPos;
-            if (GetCursorPos(out cursorPos))
-            {
-                return GetElementFromPoint(new System.Drawing.Point(cursorPos.X, cursorPos.Y));
-            }
-            return null;
-        }
-
-        public static AutomationElement? GetElementFromHandle(IntPtr hwnd)
-        {
-            try
-            {
-                return Automation.FromHandle(hwnd);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error getting element from handle: {ex.Message}");
-                return null;
-            }
-        }
-
-        public static AutomationElement? FindElementByName(AutomationElement parent, string name)
-        {
-            try
-            {
-                var condition = new PropertyCondition(Automation.PropertyLibrary.Element.Name, name);
-                return parent.FindFirstDescendant(condition);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error finding element by name: {ex.Message}");
-                return null;
-            }
-        }
-
-        public static AutomationElement? FindElementByAutomationId(AutomationElement parent, string automationId)
-        {
-            try
-            {
-                var condition = new PropertyCondition(Automation.PropertyLibrary.Element.AutomationId, automationId);
-                return parent.FindFirstDescendant(condition);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error finding element by automation ID: {ex.Message}");
-                return null;
-            }
-        }
-
-        // Get all top-level windows
-        public static List<AutomationElement> GetAllWindows()
-        {
-            try
-            {
-                var desktop = Automation.GetDesktop();
-                var condition = new PropertyCondition(Automation.PropertyLibrary.Element.ControlType, ControlType.Window);
-                return new List<AutomationElement>(desktop.FindAllChildren(condition));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error getting all windows: {ex.Message}");
-                return new List<AutomationElement>();
-            }
-        }
-
-        // Get detailed information about a window
-        public static Dictionary<string, string> GetWindowDetails(AutomationElement element)
-        {
-            var details = new Dictionary<string, string>();
-            try
-            {
-                details["Name"] = element.Name;
-                details["ControlType"] = element.ControlType.ToString();
-                details["AutomationId"] = element.AutomationId;
-                details["ClassName"] = element.ClassName;
-
-                if (element.Properties.IsOffscreen.IsSupported)
-                    details["IsOffscreen"] = element.Properties.IsOffscreen.Value.ToString();
-
-                if (element.Properties.IsEnabled.IsSupported)
-                    details["IsEnabled"] = element.Properties.IsEnabled.Value.ToString();
-
-                var boundingRect = element.BoundingRectangle;
-                details["BoundingRectangle"] = $"({boundingRect.X}, {boundingRect.Y}, {boundingRect.Width}, {boundingRect.Height})";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error getting window details: {ex.Message}");
-            }
-            return details;
         }
 
         public static IntPtr GetWindowUnderCursor()
@@ -255,6 +117,22 @@ namespace BetterStepsRecorder
             catch (ArgumentException)
             {
                 // This exception can occur if the process has exited since retrieving the process ID
+                return null;
+            }
+        }
+
+        public static AutomationElement? GetElementFromPoint(Point point)
+        {
+            try
+            {
+                // System.Windows.Automation.AutomationElement.FromPoint expects a System.Windows.Point,
+                // so we need to convert System.Drawing.Point to System.Windows.Point.
+                System.Windows.Point windowsPoint = new System.Windows.Point(point.X, point.Y);
+                return AutomationElement.FromPoint(windowsPoint);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error getting element from point: {ex.Message}");
                 return null;
             }
         }

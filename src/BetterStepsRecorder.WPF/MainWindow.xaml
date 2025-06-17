@@ -78,27 +78,21 @@
                     Grid.Row="1"
                     Margin="5"
                     Command="{Binding StartRecording}"
-                    Content="Start Recording"
-                    Visibility="{Binding Recording, UpdateSourceTrigger=PropertyChanged, Converter={mah:StaticResource ReverseBooleanToVisibilityConverter}}" />
+                    Content="Start recording"
+                    Visibility="{Binding Recording, UpdateSourceTrigger=PropertyChanged, Converter={mah:StaticResource ReverseBooleanToVisibilityConverter}}" >
+                </Button>
                 <Button
                     Grid.Row="1"
                     Margin="5"
                     Command="{Binding StopRecording}"
+                    Foreground="Red"
+                    Content="Stop Recording"
                     Visibility="{Binding Recording, UpdateSourceTrigger=PropertyChanged, Converter={mah:StaticResource BooleanToVisibilityConverter}}">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse
-                                Width="16"
-                                Height="16"
-                                Fill="Red" />
-                            <Label Content="Recording" FontSize="12" />
-                        </StackPanel>
-                    </Button.Content>
                 </Button>
             </Grid>
             <GridSplitter Grid.Column="1" Width="3" />
             <Grid Grid.Column="2">
-                <Image Source="/Resources/logo.ico" />
+                <Image Source="{Binding SelectedScreenshot, Converter={StaticResource Base64ImageConverter}}" />
             </Grid>
             <GridSplitter Grid.Column="3" Width="3" />
             <Grid Grid.Column="4" />

@@ -1,4 +1,5 @@
-﻿using BetterStepsRecorder.WPF.Utilities;
+﻿using BetterStepsRecorder.WPF.Services;
+using BetterStepsRecorder.WPF.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -28,27 +29,32 @@ namespace BetterStepsRecorder.WPF
             }
         }
 
+        private string _selectedScreenshot;
+        public string SelectedScreenshot
+        {
+            get => _selectedScreenshot;
+            set
+            {
+                if (_selectedScreenshot != value)
+                {
+                    _selectedScreenshot = value;
+                    NotifyPropertyChanged(nameof(SelectedScreenshot));
+                }
+            }
+        }
+
         #endregion
 
         IDialogCoordinator _dialogCoordinator { get; }
+        IScreenCaptureService _screenCaptureService { get; }
 
-        public MainWindowViewModel(IDialogCoordinator dialogCoordinator) 
+        public MainWindowViewModel(
+            IDialogCoordinator dialogCoordinator,
+            IScreenCaptureService screenCaptureService)
         {
             _dialogCoordinator = dialogCoordinator;
+            _screenCaptureService = screenCaptureService;
         }
-
-        #region Methods
-
-        private void OpenGitHubRepo()
-        {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "https://github.com/Mentaleak/BetterStepsRecorder",
-                UseShellExecute = true
-            });
-        }
-
-        #endregion
 
         #region Commands
 
@@ -59,7 +65,7 @@ namespace BetterStepsRecorder.WPF
             {
                 _openHelpDialog ??= new RelayCommands(async obj =>
                     {
-                        var result = await _dialogCoordinator.ShowMessageAsync(this, 
+                        var result = await _dialogCoordinator.ShowMessageAsync(this,
                             "Help",
                             "Welcome to the Better Steps Recorder help menu.\r\nThis tool helps you record steps and take screenshots efficiently.\r\nFor more details and instructions, visit our GitHub repository.",
                             MessageDialogStyle.AffirmativeAndNegative,
@@ -81,6 +87,7 @@ namespace BetterStepsRecorder.WPF
             {
                 _startRecording ??= new RelayCommands(async obj =>
                 {
+                    StartCaptureScreen();
                     Recording = true;
                 }, obj => true);
                 return _startRecording;
@@ -94,6 +101,7 @@ namespace BetterStepsRecorder.WPF
             {
                 _stopRecording ??= new RelayCommands(async obj =>
                 {
+                    StopCaptureScreen();
                     Recording = false;
                 }, obj => true);
                 return _stopRecording;
@@ -102,7 +110,38 @@ namespace BetterStepsRecorder.WPF
 
         #endregion
 
+        #region Methods
+
+        private void OpenGitHubRepo()
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "https://github.com/Mentaleak/BetterStepsRecorder",
+                UseShellExecute = true
+            });
+        }
+
+        private void StartCaptureScreen()
+        {
+            _screenCaptureService.OnScreenshotCaptured += _screenCaptureService_OnScreenshotCaptured;
+            _screenCaptureService.StartCapturing();
+        }
+
+        private void StopCaptureScreen()
+        {
+            _screenCaptureService.OnScreenshotCaptured -= _screenCaptureService_OnScreenshotCaptured;
+            _screenCaptureService.StopCapturing();
+        }
+
+        private void _screenCaptureService_OnScreenshotCaptured(object? sender, string base64Screenshot)
+        {
+            SelectedScreenshot = base64Screenshot;
+        }
+
+        #endregion
+
         public event PropertyChangedEventHandler? PropertyChanged;
-        public void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void NotifyPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
