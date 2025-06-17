@@ -69,10 +69,11 @@
                     Grid.Row="0"
                     Margin="5,0"
                     BorderBrush="{StaticResource MahApps.Brushes.Accent3}"
-                    BorderThickness="1">
-                    <ListBoxItem Content="Test1" />
-                    <ListBoxItem Content="Test2" />
-                    <ListBoxItem Content="Test3" />
+                    BorderThickness="1"
+                    SelectionMode="Single"
+                    ItemsSource="{Binding Steps}"
+                    SelectedItem="{Binding SelectedStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    DisplayMemberPath="ElementName">
                 </ListBox>
                 <Button
                     Grid.Row="1"

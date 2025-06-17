@@ -3,6 +3,7 @@ using BetterStepsRecorder.WPF.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,35 @@ namespace BetterStepsRecorder.WPF
                 {
                     _selectedScreenshot = value;
                     NotifyPropertyChanged(nameof(SelectedScreenshot));
+                }
+            }
+        }
+
+        private ObservableCollection<ScreenshotInfo> _steps = new ObservableCollection<ScreenshotInfo>();
+        public ObservableCollection<ScreenshotInfo> Steps
+        {
+            get => _steps;
+            set
+            {
+                if (_steps != value)
+                {
+                    _steps = value;
+                    NotifyPropertyChanged(nameof(Steps));
+                }
+            }
+        }
+
+        private ScreenshotInfo _selectedStep;
+        public ScreenshotInfo SelectedStep
+        {
+            get => _selectedStep;
+            set
+            {
+                if (_selectedStep != value)
+                {
+                    _selectedStep = value;
+                    NotifyPropertyChanged(nameof(SelectedStep));
+                    SelectedScreenshot = _selectedStep?.ScreenshotBase64 ?? string.Empty;
                 }
             }
         }
@@ -135,7 +165,10 @@ namespace BetterStepsRecorder.WPF
 
         private void _screenCaptureService_OnScreenshotCaptured(object? sender, ScreenshotInfo screenshotInfo)
         {
+            screenshotInfo.ElementName = "Step " + (Steps.Count + 1);
+            Steps.Add(screenshotInfo);
             SelectedScreenshot = screenshotInfo.ScreenshotBase64;
+            SelectedStep = Steps.Last();
         }
 
         #endregion
