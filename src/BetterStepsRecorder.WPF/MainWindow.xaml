@@ -8,6 +8,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utilities="clr-namespace:BetterStepsRecorder.WPF.Utilities"
+    xmlns:pg="clr-namespace:BetterStepsRecorder.WPF.Components.PropertyGrid"
     Title="Better Steps Recorder"
     Width="1200"
     Height="650"
@@ -96,7 +97,13 @@
                 <Image Source="{Binding SelectedScreenshot, Converter={StaticResource Base64ImageConverter}}" />
             </Grid>
             <GridSplitter Grid.Column="3" Width="3" />
-            <Grid Grid.Column="4" />
+            <Grid Grid.Column="4" >
+                <pg:PropertyGrid 
+                    Item="{Binding SelectedStep}"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/> 
+            </Grid>
         </Grid>
     </Grid>
 </mah:MetroWindow>

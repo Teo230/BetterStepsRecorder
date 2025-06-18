@@ -1,4 +1,5 @@
-﻿using BetterStepsRecorder.WPF.Services;
+﻿using BetterStepsRecorder.WPF.Components.PropertyGrid;
+using BetterStepsRecorder.WPF.Services;
 using BetterStepsRecorder.WPF.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using System;
