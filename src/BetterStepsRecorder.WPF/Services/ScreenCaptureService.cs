@@ -1,13 +1,16 @@
 ﻿using BetterStepsRecorder.WPF.Utilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using static BetterStepsRecorder.WPF.Utilities.WindowHelper;
@@ -132,6 +135,7 @@ namespace BetterStepsRecorder.WPF.Services
                         WindowTitle = windowTitle,
                         ApplicationName = applicationName,
                         ElementName = elementName,
+                        Description = $"Captured at {DateTime.Now:HH:mm:ss}",
                         ElementType = elementType,
                         UIWidth = UIWidth,
                         UIHeight = UIHeight,
@@ -303,15 +307,27 @@ namespace BetterStepsRecorder.WPF.Services
 
     internal class ScreenshotInfo()
     {
-        public string? WindowTitle { get; set; }
-        public string? ApplicationName { get; set; }
+        [Category("Application")]
+        public string? WindowTitle { get; internal set; }
+        [Category("Application")]
+        public string? ApplicationName { get; internal set; }
+        [Category("Detail"), DisplayName("1. Name")]
         public string? ElementName { get; set; }
-        public string? ElementType { get; set; }
-        public int UIWidth { get; set; }
-        public int UIHeight { get; set; }
-        public int WindowWidth { get; set; }
-        public int WindowHeight { get; set; }
-        public POINT MousePosition { get; set; }
-        public string? ScreenshotBase64 { get; set; }
+        [Category("Detail"), DisplayName("2. Description")]
+        public string? Description { get; set; }
+        [Category("Application")]
+        internal string? ElementType { get; set; }
+        [Category("Application")]
+        public int UIWidth { get; internal set; }
+        [Category("Application")]
+        public int UIHeight { get; internal set; }
+        [Category("Application")]
+        public int WindowWidth { get; internal set; }
+        [Category("Application")]
+        public int WindowHeight { get; internal set; }
+        [Category("Application")]
+        public POINT MousePosition { get; internal set; }
+        [JsonIgnore]
+        internal string? ScreenshotBase64 { get; set; }
     }
 }

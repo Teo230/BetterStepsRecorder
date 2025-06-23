@@ -8,7 +8,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utilities="clr-namespace:BetterStepsRecorder.WPF.Utilities"
-    xmlns:pg="clr-namespace:BetterStepsRecorder.WPF.Components.PropertyGrid"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
     Title="Better Steps Recorder"
     Width="1200"
     Height="650"
@@ -62,12 +62,14 @@
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-
+                <TextBlock Text="Steps" Style="{StaticResource TextBlockTitle}" HorizontalAlignment="Left" Margin="5"/>
                 <ListBox
-                    Grid.Row="0"
+                    AllowDrop="True"
+                    Grid.Row="1"
                     Margin="5,0"
                     BorderBrush="{StaticResource MahApps.Brushes.Accent3}"
                     BorderThickness="1"
@@ -77,14 +79,14 @@
                     DisplayMemberPath="ElementName">
                 </ListBox>
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="5"
                     Command="{Binding StartRecording}"
                     Content="Start recording"
                     Visibility="{Binding Recording, UpdateSourceTrigger=PropertyChanged, Converter={mah:StaticResource ReverseBooleanToVisibilityConverter}}" >
                 </Button>
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="5"
                     Command="{Binding StopRecording}"
                     Foreground="Red"
@@ -93,16 +95,24 @@
                 </Button>
             </Grid>
             <GridSplitter Grid.Column="1" Width="3" />
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="2" Margin="5">
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" />
                 <Image Source="{Binding SelectedScreenshot, Converter={StaticResource Base64ImageConverter}}" />
             </Grid>
             <GridSplitter Grid.Column="3" Width="3" />
-            <Grid Grid.Column="4" >
-                <pg:PropertyGrid 
-                    Item="{Binding SelectedStep}"
-                    Margin="5"
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Properties" Style="{StaticResource TextBlockTitle}" HorizontalAlignment="Left" Margin="10,5"/>
+                <hc:PropertyGrid 
+                    Grid.Row="1"
+                    SelectedObject="{Binding SelectedStep, UpdateSourceTrigger=PropertyChanged}"
+                    ShowSortButton="False"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/> 
+                    VerticalAlignment="Stretch"/>
             </Grid>
         </Grid>
     </Grid>
