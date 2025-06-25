@@ -29,7 +29,7 @@ namespace BetterStepsRecorder.WPF.Components.PropertyGrid
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty SelectedProperty =
+        public static readonly DependencyProperty SelectedObjectProperty =
             DependencyProperty.Register(
                 "SelectedProperty",
                 typeof(object),
@@ -51,8 +51,8 @@ namespace BetterStepsRecorder.WPF.Components.PropertyGrid
 
         public object SelectedObject
         {
-            get { return GetValue(SelectedProperty); }
-            set { SetValue(SelectedProperty, value); }
+            get { return GetValue(SelectedObjectProperty); }
+            set { SetValue(SelectedObjectProperty, value); }
         }
 
         private ObservableCollection<PropertyGridItem> _propertyItems = new ObservableCollection<PropertyGridItem>();

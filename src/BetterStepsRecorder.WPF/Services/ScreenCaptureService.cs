@@ -303,6 +303,7 @@ namespace BetterStepsRecorder.WPF.Services
 
     internal class ScreenshotInfo()
     {
+        public Guid ID { get; } = Guid.NewGuid();
         public string? WindowTitle { get; set; }
         public string? ApplicationName { get; set; }
         public string? ElementName { get; set; }
