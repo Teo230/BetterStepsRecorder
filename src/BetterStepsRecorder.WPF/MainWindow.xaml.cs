@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,6 @@ namespace BetterStepsRecorder.WPF
         public MainWindow()
         {
             InitializeComponent();
-        }
+        }  
     }
 }
