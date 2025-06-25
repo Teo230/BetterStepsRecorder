@@ -166,6 +166,7 @@ namespace BetterStepsRecorder.WPF
         private void _screenCaptureService_OnScreenshotCaptured(object? sender, ScreenshotInfo screenshotInfo)
         {
             screenshotInfo.ElementName = "Step " + (Steps.Count + 1);
+            screenshotInfo.Step = Steps.Count + 1;
             Steps.Add(screenshotInfo);
             SelectedScreenshot = screenshotInfo.ScreenshotBase64;
             SelectedStep = Steps.Last();

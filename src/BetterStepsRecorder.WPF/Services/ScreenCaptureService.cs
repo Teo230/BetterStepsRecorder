@@ -307,7 +307,10 @@ namespace BetterStepsRecorder.WPF.Services
 
     internal class ScreenshotInfo()
     {
-        public Guid ID { get; } = Guid.NewGuid();
+        internal Guid ID { get; } = Guid.NewGuid();
+        internal string? ScreenshotBase64 { get; set; }
+        internal int Step { get; set; }
+
         [Category("Application")]
         public string? WindowTitle { get; internal set; }
         [Category("Application")]
@@ -328,7 +331,5 @@ namespace BetterStepsRecorder.WPF.Services
         public int WindowHeight { get; internal set; }
         [Category("Application")]
         public POINT MousePosition { get; internal set; }
-        [JsonIgnore]
-        internal string? ScreenshotBase64 { get; set; }
     }
 }
